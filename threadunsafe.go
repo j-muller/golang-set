@@ -273,6 +273,22 @@ func (set *threadUnsafeSet) ToSlice() []interface{} {
 	return keys
 }
 
+func (set *threadUnsafeSet) ToIntSlice() ([]int, error) {
+	items := set.ToSlice()
+	res := make([]int, len(items))
+
+	for index, item := range items {
+		v, ok := item.(int)
+		if !ok {
+			return nil, fmt.Errorf("can not convert %v to int.", item)
+		}
+
+		res[index] = v
+	}
+
+	return res, nil
+}
+
 // MarshalJSON creates a JSON array from the set, it marshals all elements
 func (set *threadUnsafeSet) MarshalJSON() ([]byte, error) {
 	items := make([]string, 0, set.Cardinality())

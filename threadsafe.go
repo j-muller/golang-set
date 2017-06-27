@@ -25,7 +25,10 @@ SOFTWARE.
 
 package mapset
 
-import "sync"
+import (
+	"fmt"
+	"sync"
+)
 
 type threadSafeSet struct {
 	s threadUnsafeSet
@@ -242,6 +245,24 @@ func (set *threadSafeSet) ToSlice() []interface{} {
 	}
 	set.RUnlock()
 	return keys
+}
+
+func (set *threadSafeSet) ToIntSlice() ([]int, error) {
+	items := set.ToSlice()
+	res := make([]int, len(items))
+
+	set.RLock()
+	for index, item := range items {
+		v, ok := item.(int)
+		if !ok {
+			return nil, fmt.Errorf("can not convert %v to int.", item)
+		}
+
+		res[index] = v
+	}
+	set.RUnlock()
+
+	return res, nil
 }
 
 func (set *threadSafeSet) MarshalJSON() ([]byte, error) {
