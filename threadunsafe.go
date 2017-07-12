@@ -289,6 +289,22 @@ func (set *threadUnsafeSet) ToIntSlice() ([]int, error) {
 	return res, nil
 }
 
+func (set *threadUnsafeSet) ToStringSlice() ([]string, error) {
+	items := set.ToSlice()
+	res := make([]string, len(items))
+
+	for index, item := range items {
+		v, ok := item.(string)
+		if !ok {
+			return nil, fmt.Errorf("can not convert %v to string.", item)
+		}
+
+		res[index] = v
+	}
+
+	return res, nil
+}
+
 // MarshalJSON creates a JSON array from the set, it marshals all elements
 func (set *threadUnsafeSet) MarshalJSON() ([]byte, error) {
 	items := make([]string, 0, set.Cardinality())

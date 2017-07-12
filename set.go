@@ -164,6 +164,9 @@ type Set interface {
 
 	// Returns the members of the set as an int slice.
 	ToIntSlice() ([]int, error)
+
+	// Returns the members of the set as a string slice.
+	ToStringSlice() ([]string, error)
 }
 
 // Creates and returns a reference to an empty set.

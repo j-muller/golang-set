@@ -265,6 +265,24 @@ func (set *threadSafeSet) ToIntSlice() ([]int, error) {
 	return res, nil
 }
 
+func (set *threadSafeSet) ToStringSlice() ([]string, error) {
+	items := set.ToSlice()
+	res := make([]string, len(items))
+
+	set.RLock()
+	for index, item := range items {
+		v, ok := item.(string)
+		if !ok {
+			return nil, fmt.Errorf("can not convert %v to string.", item)
+		}
+
+		res[index] = v
+	}
+	set.RUnlock()
+
+	return res, nil
+}
+
 func (set *threadSafeSet) MarshalJSON() ([]byte, error) {
 	set.RLock()
 	b, err := set.s.MarshalJSON()
